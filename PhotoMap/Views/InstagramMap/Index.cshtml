@@ -1,8 +1,26 @@
-﻿
+﻿@model PhotoMap.ViewModels.UserViewModel
+
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Test</h2>
+
+@Html.ActionLink("Details", "Details")
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "Getting Instagram media was unsuccessful. Please correct any errors and try again.");
+    <div class="editor-label">
+        @Html.LabelFor(model => model.UserName):
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.UserName)
+    </div>
+    <div>
+        <input type="submit" value="Get Images" />
+    </div>
+}
 
