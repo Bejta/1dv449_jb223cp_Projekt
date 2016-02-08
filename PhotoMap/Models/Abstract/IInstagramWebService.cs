@@ -9,6 +9,6 @@ namespace PhotoMap.Models.Abstract
 {
     public interface IInstagramWebService : IDisposable
     {
-        List<User> GetUserImages();
+        List<User> GetUserImages(string code);
     }
 }

@@ -22,9 +22,9 @@ namespace PhotoMap.Models
             _instagramWebService = instagramWebService;
         }
 
-        public List<User> GetUserImages()
+        public List<User> GetUserImages(string code)
         {
-            return _instagramWebService.GetUserImages();
+            return _instagramWebService.GetUserImages(code);
         }
 
     }

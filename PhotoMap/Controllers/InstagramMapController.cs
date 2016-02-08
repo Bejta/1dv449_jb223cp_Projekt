@@ -27,32 +27,51 @@ namespace PhotoMap.Controllers
         // GET: InstagramMap
         public ActionResult Index()
         {
-            //var code = Redirect("https://api.instagram.com/oauth/authorize/?client_id=cb9ed86412594d1eb2bf9b7f83a73131&redirect_uri=http://localhost&response_type=code");
             return View();
         }
 
+        public ActionResult Login()
+        {
+            //var code = Redirect("https://api.instagram.com/oauth/authorize/?client_id=cb9ed86412594d1eb2bf9b7f83a73131&redirect_uri=http://localhost&response_type=code");
+            return View("Login");
+        }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public ActionResult Index(User user)
         {
-            //ViewBag.Message = "Your contact page.";
-            var client_id = ConfigurationManager.AppSettings["instagram.clientid"];
-            var redirect_uri = ConfigurationManager.AppSettings["instagram.redirecturi"];
-            var response_uri = "https://api.instagram.com/oauth/authorize/?client_id=" + client_id + "& redirect_uri=" + redirect_uri + "& response_type=code";
-            //var response_acctoken = client_id + "& redirect_uri=" + redirect_uri + "& response_type=token";
-            Response.Redirect(response_uri);
-            try
+            ViewBag.Message = "Your contact page.";
+            
+            ////var response_acctoken = client_id + "& redirect_uri=" + redirect_uri + "& response_type=token";
+            //var token_uri = "https://api.instagram.com/oauth/access_token/";
+            
+            if (string.IsNullOrWhiteSpace(Request.QueryString["code"]))
             {
-                if (ModelState.IsValid)
+                var client_id = ConfigurationManager.AppSettings["instagram.clientid"];
+                var redirect_uri = ConfigurationManager.AppSettings["instagram.redirecturi"];
+                var response_uri = string.Format("https://api.instagram.com/oauth/authorize/?client_id={0}&redirect_uri={1}&response_type=code",
+                         client_id, 
+                         redirect_uri);
+                Response.Redirect(response_uri);
+            }
+            else
+            {
+                try
                 {
-                    var webservice = new InstagramWebservice();
-                    var model = webservice.GetUserImages();
+                    if (ModelState.IsValid)
+                    {
+                        var code = Request.QueryString["code"];
+
+                        var webservice = new InstagramWebservice();
+                        var model = webservice.GetUserImages(code);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(String.Empty, ex.Message);
                 }
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(String.Empty, ex.Message);
-            }
+            
 
             return View("Index");
         }

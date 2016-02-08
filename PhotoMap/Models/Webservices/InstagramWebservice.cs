@@ -33,12 +33,12 @@ namespace PhotoMap.Models.Webservices
         //        rawJson = reader.ReadToEnd();
         //    }
         //}
-        public override List<User> GetUserImages()
+        public override List<User> GetUserImages(string code)
         {
 
             var rawJson = string.Empty;
             var apiRequest = "users/self/";
-            rawJson = RawJson(apiRequest);
+            rawJson = RawJson(apiRequest, code);
             List<User>images = new List<User>();
             return images;
             //throw new NotImplementedException();

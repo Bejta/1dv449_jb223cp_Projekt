@@ -43,19 +43,23 @@ namespace PhotoMap.Controllers
         public ActionResult Index(User user)
         {
             //ViewBag.Message = "Your contact page.";
-            try
+            if (!string.IsNullOrWhiteSpace(Request.QueryString["code"]))
             {
-                if (ModelState.IsValid)
+                try
                 {
-                    var webservice = new InstagramWebservice();
-                    var model = webservice.GetUserImages();
+                    if (ModelState.IsValid)
+                    {
+                        var code = Request.QueryString["code"];
+                        var webservice = new InstagramWebservice();
+                        var model = webservice.GetUserImages(code);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(String.Empty, ex.Message);
                 }
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(String.Empty, ex.Message);
-            }
-            
+
             return View("Index");
         }
     }

@@ -2,10 +2,12 @@
 using PhotoMap.Models.Entities;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Web;
 
@@ -18,14 +20,14 @@ namespace PhotoMap.Models.Abstract
         // This is URL for authentication
         //internal static readonly string oAuthUrl= "https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=code
 
-        public abstract List<User> GetUserImages();
+        public abstract List<User> GetUserImages(string code);
 
-        public string RawJson(string apiRequest)
+        public string RawJson(string apiRequest, string code)
         {
             var rawJson = string.Empty;
            // var code = GetAuthCode();
-            var accessToken = GetAccessToken();
-            var url = BaseUrl + apiRequest + "?" + accessToken;
+            var accessToken = GetAccessToken(code);
+            var url = BaseUrl + apiRequest + "?access_token=" + accessToken.AccessToken;
             var request = (HttpWebRequest)WebRequest.Create(url);
 
             using (var response = request.GetResponse())
@@ -35,89 +37,88 @@ namespace PhotoMap.Models.Abstract
             }
             return rawJson;
         }
+
+        //Process all requests and return a response
+        private WebResponse processWebRequest(string url)
+        {
+
+            WebRequest request;
+            WebResponse response;
+
+            request = WebRequest.Create(url);
+            response = request.GetResponse();
+
+            return response;
+
+        }
         private string GetAuthCode()
         {
-            var client_id = ConfigurationManager.AppSettings["instagram.clientid"];
-            var oAuthConsumerSecret = ConfigurationManager.AppSettings["instagram.clientsecret"];
-            var redirect_uri = ConfigurationManager.AppSettings["instagram.redirecturi"];
-            var oAuthUrl = "https://api.instagram.com/oauth/authorize/?" + client_id + "& redirect_uri=" + redirect_uri + "&response_type=token";
-
-            var authorizationHeader = string.Format("Basic {0}",
-                 Convert.ToBase64String(Encoding.UTF8.GetBytes(
-                     Uri.EscapeDataString(client_id) + ":" + Uri.EscapeDataString((oAuthConsumerSecret)))
-             ));
-
-            var request = (HttpWebRequest)WebRequest.Create(oAuthUrl);
-            request.Headers.Add("Authorization", authorizationHeader);
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-
-            using (Stream stream = request.GetRequestStream())
-            {
-                byte[] content = ASCIIEncoding.ASCII.GetBytes("grant_type=client_credentials");
-                stream.Write(content, 0, content.Length);
-            }
-
-            request.Headers.Add("Accept-Encoding", "gzip");
-
-            var authResponse = request.GetResponse();
+                var client_id = ConfigurationManager.AppSettings["instagram.clientid"];
+                var redirect_uri = ConfigurationManager.AppSettings["instagram.redirecturi"];
+                var response_uri = string.Format("https://api.instagram.com/oauth/authorize/?client_id={0}&redirect_uri={1}&response_type=code",
+                         client_id,
+                         redirect_uri);
+                //Response.Redirect(response_uri);
             
-            string code = "zz";
+
+            var request = (HttpWebRequest)WebRequest.Create(response_uri);
+            
+            WebResponse authResponse = request.GetResponse();
+            var uri = authResponse.ResponseUri;
+            
+
+            // string uricode = uri["code"];
+            //WebRequest wrGETURL;
+            //wrGETURL = WebRequest.Create(sUrl);
+            StreamReader reader = new StreamReader(authResponse.GetResponseStream());
+            string responseText = reader.ReadToEnd();
+            Stream dataStream = authResponse.GetResponseStream();
+            //Stream objStream;
+            //objStream = request.GetResponse().GetResponseStream();
+            //StreamReader objReader = new StreamReader(objStream, Encoding.UTF8);
+            //WebResponse wr = wrGETURL.GetResponse();
+            string code = "kkk";
+
+            NameValueCollection parameters = new NameValueCollection();
+            parameters.Add("client_id", ConfigurationManager.AppSettings["instagram.clientid"].ToString());
+            parameters.Add("client_secret", ConfigurationManager.AppSettings["instagram.clientsecret"].ToString());
+            parameters.Add("grant_type", "authorization_code");
+            parameters.Add("redirect_uri", ConfigurationManager.AppSettings["instagram.redirecturi"].ToString());
+            parameters.Add("code", code);
+
+            WebClient client = new WebClient();
+            var result = client.UploadValues("https://api.instagram.com/oauth/access_token", "POST", parameters);
+
+            var response = System.Text.Encoding.Default.GetString(result);
+
+            var jsResult = JsonConvert.DeserializeObject(response);
+            
             return code;
         }
 
-        private object GetAccessToken()
+       
+
+        private OAuthInstagramAccessToken GetAccessToken(string code)
         {
+            var client = new HttpClient();
 
-            string url = "https://api.instagram.com/oauth/access_token";
-            WebRequest myReq = WebRequest.Create(url);
+            var oAuthUrl = ConfigurationManager.AppSettings["OAuthUrl"];
 
-            WebResponse wr = myReq.GetResponse();
-            Stream receiveStream = wr.GetResponseStream();
-            StreamReader readertest = new StreamReader(receiveStream, Encoding.UTF8);
-            string content1 = readertest.ReadToEnd();
+            var postData = new List<KeyValuePair<string, string>>();
+            postData.Add(new KeyValuePair<string, string>("client_id", ConfigurationManager.AppSettings["instagram.clientid"].ToString()));
+            postData.Add(new KeyValuePair<string, string>("client_secret", ConfigurationManager.AppSettings["instagram.clientsecret"].ToString()));
+            postData.Add(new KeyValuePair<string, string>("grant_type", "authorization_code"));
+            postData.Add(new KeyValuePair<string, string>("redirect_uri", ConfigurationManager.AppSettings["instagram.redirecturi"].ToString()));
+            postData.Add(new KeyValuePair<string, string>("code", code));
 
-
-
-
-            // Get settings from Web.config.
-            var client_id = ConfigurationManager.AppSettings["instagram.clientid"];
-            var oAuthConsumerSecret = ConfigurationManager.AppSettings["instagram.clientsecret"];
-            var redirect_uri = ConfigurationManager.AppSettings["instagram.redirecturi"];
-            var oAuthUrlBase = "https://api.instagram.com/oauth/access_token";
-            var oAuthUrl = "https://api.instagram.com/oauth/authorize/?" + client_id + "& redirect_uri=" + redirect_uri + "&response_type=token";
-            // Create OAuth request.
-            var authorizationHeader = string.Format("Basic {0}",
-                Convert.ToBase64String(Encoding.UTF8.GetBytes(
-                    Uri.EscapeDataString(client_id) + ":" + Uri.EscapeDataString((oAuthConsumerSecret)))
-            ));
-
-            var request = (HttpWebRequest)WebRequest.Create(oAuthUrl);
-            request.Headers.Add("Authorization", authorizationHeader);
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded;charset=UTF-8";
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-
-            using (Stream stream = request.GetRequestStream())
-            {
-                byte[] content = ASCIIEncoding.ASCII.GetBytes("grant_type=client_credentials");
-                stream.Write(content, 0, content.Length);
-            }
-
-            request.Headers.Add("Accept-Encoding", "gzip");
-
-            // Request for an access token.
-            OAuthInstagramAccessToken accessToken;
-            using (var authResponse = request.GetResponse())
-            using (var reader = new StreamReader(authResponse.GetResponseStream()))
-            {
-                var access = reader.ReadToEnd();
-                accessToken = JsonConvert.DeserializeObject<OAuthInstagramAccessToken>(reader.ReadToEnd());
-            }
+            HttpContent content = new FormUrlEncodedContent(postData);
 
 
-            return accessToken;
+            var rslt = client.PostAsync("https://api.instagram.com/oauth/access_token", content).Result;
+            var result = rslt.Content.ReadAsStringAsync().Result;
+            OAuthInstagramAccessToken access_token = JsonConvert.DeserializeObject<OAuthInstagramAccessToken>(result);
+            return access_token;
+
         }
         #region IDisposable Members
 
