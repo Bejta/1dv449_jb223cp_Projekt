@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using PhotoMap.Models.Entities;
+using PhotoMap.Models.Responses;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -21,11 +22,13 @@ namespace PhotoMap.Models.Abstract
         //internal static readonly string oAuthUrl= "https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=code
 
         public abstract List<User> GetUserImages(string code);
+        public abstract UserInfo GetUser(string code);
+        public abstract Tags GetTags(string code, string tag);
+        public abstract List<InstagramPost> GetRecentImagesByTag(string code, string tag);
 
         public string RawJson(string apiRequest, string code)
         {
             var rawJson = string.Empty;
-           // var code = GetAuthCode();
             var accessToken = GetAccessToken(code);
             var url = BaseUrl + apiRequest + "?access_token=" + accessToken.AccessToken;
             var request = (HttpWebRequest)WebRequest.Create(url);
@@ -35,6 +38,7 @@ namespace PhotoMap.Models.Abstract
             {
                 rawJson = reader.ReadToEnd();
             }
+
             return rawJson;
         }
 

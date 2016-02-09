@@ -1,5 +1,6 @@
 ﻿using PhotoMap.Models.Abstract;
 using PhotoMap.Models.Entities;
+using PhotoMap.Models.Responses;
 using PhotoMap.Models.Webservices;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace PhotoMap.Models
         //Constructors
         public Service(): this(new InstagramWebservice())
         {
-            // Empty
+            // Empty...
         }
 
         public Service( IInstagramWebService instagramWebService)
@@ -27,5 +28,19 @@ namespace PhotoMap.Models
             return _instagramWebService.GetUserImages(code);
         }
 
+        public UserInfo GetUser(string code)
+        {
+            return _instagramWebService.GetUser(code);
+        }
+
+        public Tags GetTags(string code, string tag)
+        {
+            return _instagramWebService.GetTags(code, tag);
+        }
+
+        public List<InstagramPost> GetRecentImagesByTag(string code, string tag)
+        {
+            return _instagramWebService.GetRecentImagesByTag(code, tag);
+        }
     }
 }

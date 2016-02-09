@@ -63,7 +63,7 @@ namespace PhotoMap.Controllers
                         var code = Request.QueryString["code"];
 
                         var webservice = new InstagramWebservice();
-                        var model = webservice.GetUserImages(code);
+                        var model = webservice.GetUser(code);
                     }
                 }
                 catch (Exception ex)
