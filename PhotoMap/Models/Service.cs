@@ -42,5 +42,13 @@ namespace PhotoMap.Models
         {
             return _instagramWebService.GetRecentImagesByTag(code, tag);
         }
+        public List<Location> GetLocations(string code, Location location)
+        {
+            return _instagramWebService.GetLocations(code, location);
+        }
+        public List<InstagramPost> GetImagesByLocationID(string code, string locationId)
+        {
+            return _instagramWebService.GetImagesByLocationID(code, locationId);
+        }
     }
 }

@@ -157,6 +157,7 @@
     <Compile Include="Models\Abstract\InstagramWebServiceBase.cs" />
     <Compile Include="Models\Abstract\IService.cs" />
     <Compile Include="Models\Entities\Images.cs" />
+    <Compile Include="Models\Entities\Location.cs" />
     <Compile Include="Models\Entities\LowResolution.cs" />
     <Compile Include="Models\Entities\OAuthInstagramAccessToken.cs" />
     <Compile Include="Models\Entities\StandardResolution.cs" />

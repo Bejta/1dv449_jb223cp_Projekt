@@ -48,7 +48,7 @@ namespace PhotoMap.Models.Webservices
         }
 
         /// <summary>
-        /// Returns a list with
+        /// Returns a list with tags from given base tag
         /// </summary>
         /// <param name="code"></param>
         /// <param name="tag"></param>
@@ -63,6 +63,12 @@ namespace PhotoMap.Models.Webservices
             tags = JsonConvert.DeserializeObject<Tags>(rawJson);
             return tags;
         }
+        /// <summary>
+        /// Returns Instagram posts from given tag
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="tag"></param>
+        /// <returns></returns>
         public override List<InstagramPost> GetRecentImagesByTag(string code, string tag)
         {
             var rawJson = string.Empty;
@@ -74,8 +80,37 @@ namespace PhotoMap.Models.Webservices
             return instagramPosts;
         }
 
-        //Get pictures with specific tags
-        //https://api.instagram.com/v1/tags/{tag-name}?access_token=ACCESS-TOKEN
+        /// <summary>
+        /// Returns locations in radius of 1000 meters from given location
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public override List<Location> GetLocations(string code, Location location)
+        {
+            var rawJson = string.Empty;
+            var apiRequest = string.Format("locations/search?lat={0}&lng={1}", location.Latitude,location.Longitude);
+            rawJson = RawJson(apiRequest, code);
 
+            List<Location> locations = new List<Location>();
+            locations = JsonConvert.DeserializeObject<List<Location>>(rawJson);
+            return locations;
+        }
+        /// <summary>
+        /// Returns Instagram posts from given location
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        public override List<InstagramPost> GetImagesByLocationID(string code, string locationId)
+        {
+            var rawJson = string.Empty;
+            var apiRequest = string.Format("locations/{0}/media/recent", locationId);
+            rawJson = RawJson(apiRequest, code);
+
+            List<InstagramPost> instagramPosts = new List<InstagramPost>();
+            instagramPosts = JsonConvert.DeserializeObject<List<InstagramPost>>(rawJson);
+            return instagramPosts;
+        }
     }
 }

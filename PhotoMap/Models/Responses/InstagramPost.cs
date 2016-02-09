@@ -12,7 +12,7 @@ namespace PhotoMap.Models.Responses
         [JsonProperty("link")]
         public string Link { get; set; }
         [JsonProperty("location")]
-        public string Location { get; set;}
+        public Location Location { get; set;}
         [JsonProperty("images")]
         public Images Images { get; set; }
 
