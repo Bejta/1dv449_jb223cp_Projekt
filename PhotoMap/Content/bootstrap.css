@@ -34,6 +34,13 @@ video {
   display: inline-block;
   vertical-align: baseline;
 }
+#lblresult{
+    color:darkred;
+}
+#login{
+    font-size:0.8em;
+    color:darkred;
+}
 audio:not([controls]) {
   display: none;
   height: 0;

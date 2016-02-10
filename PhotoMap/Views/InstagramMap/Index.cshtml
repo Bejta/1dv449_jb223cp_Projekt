@@ -4,13 +4,12 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <!-- Page Heading -->
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">
             PhotoMap
-            <small>Application shows instagram posts by choosen geographical location or tag</small>
+            <small>Application shows Instagram posts by chosen geographical location or tag</small>
         </h1>
     </div>
 </div>
@@ -25,49 +24,51 @@
     </section>
 }
 <div class="col-md-6 col-xs-12" id="left">
-    @using (Html.BeginForm())
-    {
-        @Html.ValidationSummary(true, "Getting images was unsuccessful. Please correct the errors and try again.");
-        <div class="editor-label">
-            @Html.LabelFor(model => model.tag):
-        </div>
-        <div class="editor-field">
-            <input type="text" name="tag" placeholder="Enter tag and search Instagram..." />
-        </div>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.longitude):
-                </div>
+    <div class="input-group">
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(true, "Getting images was unsuccessful. Please correct the errors and try again.");
+            <div class="editor-label">
+                @Html.LabelFor(model => model.tag):
+            </div>
+            <div class="editor-field">
+                <input type="text" class="form-control" name="tag" placeholder="Enter tag and search Instagram..." />
+            </div>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.longitude):
+            </div>
                 <div class="editor-field">
-
-                    @Html.TextBoxFor(model => model.longitude)
+                    @Html.TextBoxFor(model => model.longitude, new { @class = "form-control"})
                 </div>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.latitude):
                 </div>
                 <div class="editor-field">
-                    @Html.TextBoxFor(model => model.latitude)
+                    @Html.TextBoxFor(model => model.latitude, new { @class = "form-control" })
                 </div>
-
-        if (Request.QueryString["code"] == null)
-        {
+                <hr>
+            if (Request.QueryString["code"] == null)
+            {
+                <div>
+                    <div id="login">Log In on Instagram in order to search Instagram media</div>
+                    <input type="submit" class="btn btn-primary" value="Log In on Instagram" />
+                </div>
+            }
+            else
+            {
+                <div>
+                    <input type="submit" class="btn btn-primary" value="Get Images by tag or location" />
+                </div>
+            }
+            <hr>
             <div>
-                <input type="submit" class="btn btn-primary" value="Login on Instagram" />
+                <label for="txtautocomplete">Location: </label>
+                <input type="text" id="txtautocomplete" class="form-control" placeholder="Enter the adress" />
+                <div>
+                   <label id="lblresult"></label>
+                </div>
             </div>
         }
-        else
-        {
-            <div>
-                <input type="submit" class="btn btn-primary" value="Get Images by tag or location" />
-            </div>
-        }
-        <div>
-            <span>Location:</span><input type="text" id="txtautocomplete" style="width:200px" placeholder="Enter the adress" />
-            <label id="lblresult"></label>
-        </div>
-    }
-    <div>
-        <span>Location:</span><input type="text" id="txtautocomplete" style="width:200px" placeholder="enter the adress" />
-        <label id="lblresult"></label>
     </div>
 </div>
 <div class="col-md-6 col-xs-12">
@@ -79,14 +80,14 @@
 <div class="container">
 
     <!-- Page Heading -->
-    @*<div class="row">
+    <div class="row">
         <div class="col-lg-12">
             <h3 class="page-header">
                 Instagram Posts
                 <small>Complete Instagram posts by searched criteria</small>
             </h3>
         </div>
-    </div>*@
+    </div>
     <!-- /.row -->
     @if (Model != null && Model.posts != null)
             {
@@ -100,7 +101,6 @@
                     </a>
                 </div>
                 <div class="col-md-5">
-                    <h3></h3>
                     <h4>@Html.DisplayFor(modelItem => item.Location.Name)</h4>
                     <a href="@Html.DisplayFor(modelItem => item.Link)">See image on Instagram</a>
                 </div>
