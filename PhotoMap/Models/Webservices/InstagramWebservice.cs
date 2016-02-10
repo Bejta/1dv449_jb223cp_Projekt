@@ -72,11 +72,13 @@ namespace PhotoMap.Models.Webservices
         public override List<InstagramPost> GetRecentImagesByTag(string code, string tag)
         {
             var rawJson = string.Empty;
+            
             var apiRequest = string.Format("tags/{0}/media/recent", tag);
             rawJson = RawJson(apiRequest, code);
 
             List<InstagramPost> instagramPosts = new List<InstagramPost>();
-            instagramPosts = JsonConvert.DeserializeObject<List<InstagramPost>>(rawJson);
+            instagramPosts = JsonConvert.DeserializeObject<Post>(rawJson).Data;
+            //instagramPosts = JsonConvert.DeserializeObject<List<InstagramPost>>(rawJson);
             return instagramPosts;
         }
 

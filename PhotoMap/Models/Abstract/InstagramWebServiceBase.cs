@@ -18,6 +18,7 @@ namespace PhotoMap.Models.Abstract
     {
         // With this string starts every URL except Authentication URL
         internal static readonly string BaseUrl = "https://api.instagram.com/v1/";
+        private string accessToken = string.Empty;
         // This is URL for authentication
         //internal static readonly string oAuthUrl= "https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=code
 
@@ -31,8 +32,15 @@ namespace PhotoMap.Models.Abstract
         public string RawJson(string apiRequest, string code)
         {
             var rawJson = string.Empty;
-            var accessToken = GetAccessToken(code);
-            var url = BaseUrl + apiRequest + "?access_token=" + accessToken.AccessToken;
+            OAuthInstagramAccessToken accessTokenObj = new OAuthInstagramAccessToken();
+            //checks if access token expired or is not used
+            if (accessToken == null || accessToken == String.Empty)
+            {
+                accessTokenObj = GetAccessToken(code);
+                accessToken = accessTokenObj.AccessToken;
+            }
+                
+            var url = BaseUrl + apiRequest + "?access_token=" + accessToken;
             var request = (HttpWebRequest)WebRequest.Create(url);
 
             using (var response = request.GetResponse())
@@ -114,6 +122,7 @@ namespace PhotoMap.Models.Abstract
             postData.Add(new KeyValuePair<string, string>("client_id", ConfigurationManager.AppSettings["instagram.clientid"].ToString()));
             postData.Add(new KeyValuePair<string, string>("client_secret", ConfigurationManager.AppSettings["instagram.clientsecret"].ToString()));
             postData.Add(new KeyValuePair<string, string>("grant_type", "authorization_code"));
+            postData.Add(new KeyValuePair<string, string>("scope", "public_content"));
             postData.Add(new KeyValuePair<string, string>("redirect_uri", ConfigurationManager.AppSettings["instagram.redirecturi"].ToString()));
             postData.Add(new KeyValuePair<string, string>("code", code));
 
@@ -126,18 +135,6 @@ namespace PhotoMap.Models.Abstract
             return access_token;
 
         }
-        #region IDisposable Members
-
-        protected virtual void Dispose(bool disposing)
-        {
-        }
-
-        public void Dispose()
-        {
-            Dispose(true /* disposing */);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
+       
     }
 }

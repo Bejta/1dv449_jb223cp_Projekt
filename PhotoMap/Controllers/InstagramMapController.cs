@@ -2,6 +2,7 @@
 using PhotoMap.Models.Abstract;
 using PhotoMap.Models.Entities;
 using PhotoMap.Models.Webservices;
+using PhotoMap.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -27,29 +28,28 @@ namespace PhotoMap.Controllers
         // GET: InstagramMap
         public ActionResult Index()
         {
-            return View();
+            PhotoMapViewModel photoMap = new PhotoMapViewModel();
+
+            return View(photoMap);
         }
 
-        public ActionResult Login()
-        {
-            //var code = Redirect("https://api.instagram.com/oauth/authorize/?client_id=cb9ed86412594d1eb2bf9b7f83a73131&redirect_uri=http://localhost&response_type=code");
-            return View("Login");
-        }
+        //public ActionResult Login()
+        //{
+        //    //var code = Redirect("https://api.instagram.com/oauth/authorize/?client_id=cb9ed86412594d1eb2bf9b7f83a73131&redirect_uri=http://localhost&response_type=code");
+        //    return View("Login");
+        //}
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public ActionResult Index(User user)
+        public ActionResult Index([Bind(Include = "Tag")]PhotoMapViewModel photoMap)
         {
-            ViewBag.Message = "Your contact page.";
-            
-            ////var response_acctoken = client_id + "& redirect_uri=" + redirect_uri + "& response_type=token";
-            //var token_uri = "https://api.instagram.com/oauth/access_token/";
-            
+            // Checks if user is loged in (has "code" in url) and if not, redirects user to instagram login page.
+            // This could be implemented in model instead....
             if (string.IsNullOrWhiteSpace(Request.QueryString["code"]))
             {
                 var client_id = ConfigurationManager.AppSettings["instagram.clientid"];
                 var redirect_uri = ConfigurationManager.AppSettings["instagram.redirecturi"];
-                var response_uri = string.Format("https://api.instagram.com/oauth/authorize/?client_id={0}&redirect_uri={1}&response_type=code",
+                var response_uri = string.Format("https://api.instagram.com/oauth/authorize/?client_id={0}&redirect_uri={1}&response_type=code&scope=public_content",
                          client_id, 
                          redirect_uri);
                 Response.Redirect(response_uri);
@@ -62,8 +62,9 @@ namespace PhotoMap.Controllers
                     {
                         var code = Request.QueryString["code"];
 
-                        var webservice = new InstagramWebservice();
-                        var model = webservice.GetUser(code);
+                        //var webservice = new InstagramWebservice();
+
+                        photoMap.posts = _service.GetRecentImagesByTag(code, photoMap.tag);
                     }
                 }
                 catch (Exception ex)
@@ -73,7 +74,8 @@ namespace PhotoMap.Controllers
             }
             
 
-            return View("Index");
+            return View("Index", photoMap);
         }
+    
     }
 }

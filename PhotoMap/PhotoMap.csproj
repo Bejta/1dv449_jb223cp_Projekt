@@ -166,12 +166,13 @@
     <Compile Include="Models\Entities\User.cs" />
     <Compile Include="Models\Responses\InstagramPost.cs" />
     <Compile Include="Models\Responses\Meta.cs" />
+    <Compile Include="Models\Responses\Post.cs" />
     <Compile Include="Models\Responses\Tags.cs" />
     <Compile Include="Models\Responses\UserInfo.cs" />
     <Compile Include="Models\Service.cs" />
     <Compile Include="Models\Webservices\InstagramWebservice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\UserViewModel.cs" />
+    <Compile Include="ViewModels\PhotoMapViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -214,7 +215,6 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\InstagramMap\Index.cshtml" />
-    <Content Include="Views\InstagramMap\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

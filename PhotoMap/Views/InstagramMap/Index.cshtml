@@ -1,4 +1,4 @@
-﻿@model PhotoMap.ViewModels.UserViewModel
+﻿@model PhotoMap.ViewModels.PhotoMapViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -7,17 +7,15 @@
 
 <h2>Test</h2>
 
-@Html.ActionLink("Details", "Details")
-
 @using (Html.BeginForm())
 {
-    //@Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "Getting Instagram media was unsuccessful. Please correct any errors and try again.");
+    
+    @Html.ValidationSummary(true, "Getting images was unsuccessful. Please correct the errors and try again.");
     <div class="editor-label">
-        @Html.LabelFor(model => model.UserName):
+        @Html.LabelFor(model => model.tag):
     </div>
     <div class="editor-field">
-        @Html.TextBoxFor(model => model.UserName)
+        @Html.TextBoxFor(model => model.tag)
     </div>
     if (Request.QueryString["code"] == null)
     {
@@ -28,8 +26,77 @@
     else
     {
         <div>
-            <input type="submit" value="Get images" />
+            <input type="submit" value="Get images by tag" />
         </div>
     }
 }
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true, "Getting images was unsuccessful. Please correct the errors and try again.");
+    <div class="editor-label">
+        @Html.LabelFor(model => model.latitude):
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.latitude)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.longitude):
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.longitude)
+    </div>
+    if (Request.QueryString["code"] == null)
+    {
+        <div>
+            <input type="submit" value="Login" />
+        </div>
+    }
+    else
+    {
+        <div>
+            <input type="submit" value="Get images by location" />
+        </div>
+    }
+}
+<!-- Page Content -->
+<div class="container">
+
+    <!-- Page Heading -->
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="page-header">
+                Instagram Posts
+                <small>Complete Instagram posts by searched criteria</small>
+            </h3>
+        </div>
+    </div>
+    <!-- /.row -->
+    @if (Model != null && Model.posts != null)
+    {
+            foreach (var item in Model.posts)
+            {
+                <!-- Instagram post one -->
+                    <div class="row">
+                        <div class="col-md-7">
+                            <a href="#">
+                                <img class="img-responsive" src="@Html.DisplayFor(modelItem => item.Images.StdRes.url)" alt="">
+                            </a>
+                        </div>
+                        <div class="col-md-5">
+                            <h3></h3>
+                            <h4>@Html.DisplayFor(modelItem => item.Location.Name)</h4>
+                            <p> Visit image location: @Html.DisplayFor(modelItem => item.Link)</p>
+                        </div>
+                    </div>
+                    <hr>
+                <!-- THE END -->
+            }
+    }
+    else
+    {
+        <div class="row">
+            <p> Images will be presentet here after you choose search criteria...</p>
+        </div>
+    }
+</div>
 

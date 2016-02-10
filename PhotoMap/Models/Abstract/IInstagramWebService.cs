@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PhotoMap.Models.Abstract
 {
-    public interface IInstagramWebService : IDisposable
+    public interface IInstagramWebService 
     {
         List<User> GetUserImages(string code);
         List<Location> GetLocations(string code,Location location);
@@ -16,5 +16,6 @@ namespace PhotoMap.Models.Abstract
         Tags GetTags(string code, string tag);
         List<InstagramPost> GetRecentImagesByTag(string code, string tag);
         List<InstagramPost> GetImagesByLocationID(string code, string locationId);
+
     }
 }
