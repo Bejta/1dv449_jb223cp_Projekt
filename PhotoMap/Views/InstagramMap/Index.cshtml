@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">
-            Photo Map
+            PhotoMap
             <small>Application shows instagram posts by choosen geographical location or tag</small>
         </h1>
     </div>
@@ -27,7 +27,6 @@
 <div class="col-md-6 col-xs-12" id="left">
     @using (Html.BeginForm())
     {
-
         @Html.ValidationSummary(true, "Getting images was unsuccessful. Please correct the errors and try again.");
         <div class="editor-label">
             @Html.LabelFor(model => model.tag):
