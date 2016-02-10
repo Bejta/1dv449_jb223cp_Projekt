@@ -11,11 +11,17 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
+        <!-- Footer -->
         <footer>
-            <p>&copy; @DateTime.Now.Year - Developed by Jasmin Bejtovic</p>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; @DateTime.Now.Year - Developed by Jasmin Bejtovic</p>
+                </div>
+            </div>
+            <!-- /.row -->
         </footer>
     </div>
-
+    @Scripts.Render("~/Scripts/Maps.js")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

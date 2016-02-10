@@ -5,14 +5,25 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <ul class="nav navbar-nav">
-        <li>Photo Map</li>
-        <li>Application shows instagram posts by choosen geographical location or tag</li>
-
-    </ul>
+<!-- Page Heading -->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            Photo Map
+            <small>Application shows instagram posts by choosen geographical location or tag</small>
+        </h1>
+    </div>
 </div>
-
+@section scripts {
+    <section class="scripts">
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+        <script type="text/javascript">
+            google.maps.event.addDomListener(window, 'load', Initialize);
+        </script>
+        
+    </section>
+}
 <div class="col-md-6 col-xs-12" id="left">
     @using (Html.BeginForm())
     {
@@ -25,19 +36,19 @@
             <input type="text" name="tag" />
             @*@Html.TextBoxFor(model => model.tag)*@
         </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.longitude):
-        </div>
-        <div class="editor-field">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.longitude):
+                </div>
+                <div class="editor-field">
 
-            @Html.TextBoxFor(model => model.longitude)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.latitude):
-        </div>
-        <div class="editor-field">
-            @Html.TextBoxFor(model => model.latitude)
-        </div>
+                    @Html.TextBoxFor(model => model.longitude)
+                </div>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.latitude):
+                </div>
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.latitude)
+                </div>
 
         if (Request.QueryString["code"] == null)
         {
@@ -59,72 +70,15 @@
 <div>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+
     @* Logic to autocomplete *@
     <script type="text/javascript">
-    google.maps.event.addDomListener(window, 'load', intilize);
-    function intilize() {
-
-        google.maps.visualRefresh = true;
-        var Sweden = new google.maps.LatLng(55.605, 13.0038);
-        var mapOptions = {
-            zoom: 12,
-            center: { lat: 55.605, lng: 13.0038 },
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-        };
-
-        // This makes the div with id "map_canvas" a google map
-        var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-
-
-        var autocomplete = new google.maps.places.Autocomplete(document.getElementById("txtautocomplete"));
-        //autocomplete.bindTo('bounds', map);
-        var Latitude = document.getElementById("latitude");
-        var Longitude = document.getElementById("longitude");
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-
-        var place = autocomplete.getPlace();
-        var location = "Address: " + place.formatted_address + "<br/>";
-        location += "Latitude: " + place.geometry.location.lat() + "<br/>";
-        location += "Longitude: " + place.geometry.location.lng();
-
-        Latitude.value = place.geometry.location.lat();
-        Longitude.value = place.geometry.location.lng();
-
-        document.getElementById('lblresult').innerHTML = location;
-
-
-        var marker;
-        marker = new google.maps.Marker({
-            position: new google.maps.LatLng(Latitude.value, Longitude.value),
-            map: map,
-        });
-        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
-        map.setZoom(15);
-        map.setCenter(marker.getPosition());
-        });
-    };
-
+        google.maps.event.addDomListener(window, 'load', intilize);
     </script>
     <span>Location:</span><input type="text" id="txtautocomplete" style="width:200px" placeholder="enter the adress" />
     <label id="lblresult"></label>
 </div>
 
-<div>
-        @if (Model != null && Model.locations != null)
-        {
-            foreach (var item in Model.locations)
-            {
-                <!-- item list -->
-                <div class="panel panel-default">
-                   <p>List of locations in radius of 1000 meters from location that you chose</p>
-                </div>
-                <ul>
-                    <li><a href="#" id="@Html.DisplayFor(modelItem => item.Id)"><strong>@Html.DisplayFor(modelItem => item.Name)</strong></a></li>
-                </ul>
-            <!-- /item list -->
-            }
-        }
-</div>
 <!-- Page Content -->
 <div class="container">
 
@@ -139,25 +93,25 @@
     </div>
     <!-- /.row -->
     @if (Model != null && Model.posts != null)
-    {
-            foreach (var item in Model.posts)
             {
+                foreach (var item in Model.posts)
+                {
                 <!-- Instagram post one -->
-                    <div class="row">
-                        <div class="col-md-7">
-                            <a href="#">
-                                <img class="img-responsive" src="@Html.DisplayFor(modelItem => item.Images.StdRes.url)" alt="">
-                            </a>
-                        </div>
-                        <div class="col-md-5">
-                            <h3></h3>
-                            <h4>@Html.DisplayFor(modelItem => item.Location.Name)</h4>
-                            <p> Visit image location: @Html.DisplayFor(modelItem => item.Link)</p>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-md-7">
+                    <a href="#">
+                        <img class="img-responsive" src="@Html.DisplayFor(modelItem => item.Images.StdRes.url)" alt="">
+                    </a>
+                </div>
+                <div class="col-md-5">
+                    <h3></h3>
+                    <h4>@Html.DisplayFor(modelItem => item.Location.Name)</h4>
+                    <a href="@Html.DisplayFor(modelItem => item.Link)">See image on Instagram</a>
+                </div>
+            </div>
                     <hr>
                 <!-- THE END -->
-            }
+        }
     }
     else
     {
