@@ -19,7 +19,6 @@ namespace PhotoMap.ViewModels
         public float latitude { get; set; }
 
         [DisplayName("Tag")]
-        [Required]
         [StringLength(20)]
         public string tag { get; set; }
         //public string 

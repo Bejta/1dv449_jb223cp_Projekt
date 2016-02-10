@@ -11,7 +11,7 @@ namespace PhotoMap.Models.Abstract
     public interface IInstagramWebService 
     {
         List<User> GetUserImages(string code);
-        List<Location> GetLocations(string code,Location location);
+        List<Location> GetLocations(string code,float lat, float ltd);
         UserInfo GetUser(string code);
         Tags GetTags(string code, string tag);
         List<InstagramPost> GetRecentImagesByTag(string code, string tag);

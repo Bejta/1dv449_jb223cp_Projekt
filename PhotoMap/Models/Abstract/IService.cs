@@ -14,7 +14,7 @@ namespace PhotoMap.Models.Abstract
         UserInfo GetUser(string code);
         Tags GetTags(string code, string tag);
         List<InstagramPost> GetRecentImagesByTag(string code, string tag);
-        List<Location> GetLocations(string code, Location location);
+        List<Location> GetLocations(string code, float lat, float ltd);
         List<InstagramPost> GetImagesByLocationID(string code, string locationId);
 
     }

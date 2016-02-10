@@ -23,6 +23,11 @@ namespace PhotoMap
                 url: "{controller}/{action}/{code}",
                 defaults: new { controller = "InstagramMap", action = "Index", code = UrlParameter.Optional }
             );
+            routes.MapRoute(
+               name: "Default1",
+               url: "{controller}/{action}/{code}",
+               defaults: new { controller = "InstagramMap", action = "Location", code = UrlParameter.Optional }
+           );
         }
     }
 }

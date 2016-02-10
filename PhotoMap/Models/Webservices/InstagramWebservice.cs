@@ -88,10 +88,10 @@ namespace PhotoMap.Models.Webservices
         /// <param name="code"></param>
         /// <param name="location"></param>
         /// <returns></returns>
-        public override List<Location> GetLocations(string code, Location location)
+        public override List<Location> GetLocations(string code, float lat, float ltd)
         {
             var rawJson = string.Empty;
-            var apiRequest = string.Format("locations/search?lat={0}&lng={1}", location.Latitude,location.Longitude);
+            var apiRequest = string.Format("locations/search?lat={0}&lng={1}", lat,ltd);
             rawJson = RawJson(apiRequest, code);
 
             List<Location> locations = new List<Location>();

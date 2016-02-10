@@ -24,6 +24,7 @@ namespace PhotoMap.Controllers
         public InstagramMapController(IService service)
         {
             _service = service;
+            
         }
         // GET: InstagramMap
         public ActionResult Index()
@@ -40,9 +41,8 @@ namespace PhotoMap.Controllers
         //}
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public ActionResult Index([Bind(Include = "Tag")]PhotoMapViewModel photoMap)
-        {
+        //[ValidateAntiForgeryToken][Bind(Include = "Tag")]
+        public ActionResult Index(PhotoMapViewModel photoMap) { 
             // Checks if user is loged in (has "code" in url) and if not, redirects user to instagram login page.
             // This could be implemented in model instead....
             if (string.IsNullOrWhiteSpace(Request.QueryString["code"]))
@@ -52,6 +52,8 @@ namespace PhotoMap.Controllers
                 var response_uri = string.Format("https://api.instagram.com/oauth/authorize/?client_id={0}&redirect_uri={1}&response_type=code&scope=public_content",
                          client_id, 
                          redirect_uri);
+                //string a = response_uri;
+                //Server.Transfer(response_uri);
                 Response.Redirect(response_uri);
             }
             else
@@ -61,10 +63,23 @@ namespace PhotoMap.Controllers
                     if (ModelState.IsValid)
                     {
                         var code = Request.QueryString["code"];
-
-                        //var webservice = new InstagramWebservice();
-
-                        photoMap.posts = _service.GetRecentImagesByTag(code, photoMap.tag);
+                        
+                        if (photoMap.tag != null)
+                        {
+                           photoMap.posts = _service.GetRecentImagesByTag(code, photoMap.tag);
+                        }
+                        else
+                        {
+                            if (photoMap.latitude > 0.0 && photoMap.longitude > 0.0)
+                            {
+                                List<Location> locations = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
+                                foreach (Location item in locations)
+                                {
+                                    photoMap.locations.Add(item);
+                                }
+                            }
+                        }
+      
                     }
                 }
                 catch (Exception ex)
@@ -76,6 +91,51 @@ namespace PhotoMap.Controllers
 
             return View("Index", photoMap);
         }
-    
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        [ActionName("Location")]
+        public ActionResult Location(PhotoMapViewModel photoMap)
+        {
+            // Checks if user is loged in (has "code" in url) and if not, redirects user to instagram login page.
+            // This could be implemented in model instead....
+            if (string.IsNullOrWhiteSpace(Request.QueryString["code"]))
+            {
+                var client_id = ConfigurationManager.AppSettings["instagram.clientid"];
+                var redirect_uri = ConfigurationManager.AppSettings["instagram.redirecturi"];
+                var response_uri = string.Format("https://api.instagram.com/oauth/authorize/?client_id={0}&redirect_uri={1}&response_type=code&scope=public_content",
+                         client_id,
+                         redirect_uri);
+                //string a = response_uri;
+                //Server.Transfer(response_uri);
+                Response.Redirect(response_uri);
+            }
+            else
+            {
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        var code = Request.QueryString["code"];
+                        if (photoMap.latitude > 0.0 && photoMap.longitude > 0.0)
+                        {
+                            List<Location> locations = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
+                            foreach (Location item in locations)
+                            {
+                                photoMap.locations.Add(item);
+                            }
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(String.Empty, ex.Message);
+                }
+            }
+
+
+            return View("Index", photoMap);
+        }
+
     }
 }

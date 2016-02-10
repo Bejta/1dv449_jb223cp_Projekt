@@ -26,7 +26,7 @@ namespace PhotoMap.Models.Abstract
         public abstract UserInfo GetUser(string code);
         public abstract Tags GetTags(string code, string tag);
         public abstract List<InstagramPost> GetRecentImagesByTag(string code, string tag);
-        public abstract List<Location> GetLocations(string code, Location location);
+        public abstract List<Location> GetLocations(string code, float lat, float ltd);
         public abstract List<InstagramPost> GetImagesByLocationID(string code, string locationId);
 
         public string RawJson(string apiRequest, string code)

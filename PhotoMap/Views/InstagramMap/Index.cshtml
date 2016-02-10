@@ -15,8 +15,22 @@
         @Html.LabelFor(model => model.tag):
     </div>
     <div class="editor-field">
-        @Html.TextBoxFor(model => model.tag)
+        <input type="text" name="tag" />
+        @*@Html.TextBoxFor(model => model.tag)*@
     </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.longitude):
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.longitude)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.latitude):
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.latitude)
+    </div>
+
     if (Request.QueryString["code"] == null)
     {
         <div>
@@ -30,7 +44,7 @@
         </div>
     }
 }
-@using (Html.BeginForm())
+@*@using (Html.BeginForm("Location", "InstagramMap"))
 {
     @Html.ValidationSummary(true, "Getting images was unsuccessful. Please correct the errors and try again.");
     <div class="editor-label">
@@ -57,7 +71,23 @@
             <input type="submit" value="Get images by location" />
         </div>
     }
-}
+}*@
+<div>
+        @if (Model != null && Model.locations != null)
+        {
+            foreach (var item in Model.locations)
+            {
+                <!-- item list -->
+                <div class="panel panel-default">
+                   <p>List of locations in radius of 1000 meters from location that you chose</p>
+                </div>
+                <ul>
+                    <li><a href="#" id="@Html.DisplayFor(modelItem => item.Id)"><strong>@Html.DisplayFor(modelItem => item.Name)</strong></a></li>
+                </ul>
+            <!-- /item list -->
+            }
+        }
+</div>
 <!-- Page Content -->
 <div class="container">
 
