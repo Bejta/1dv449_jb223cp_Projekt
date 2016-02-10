@@ -170,6 +170,7 @@
     <Compile Include="Models\Responses\Post.cs" />
     <Compile Include="Models\Responses\Tags.cs" />
     <Compile Include="Models\Responses\UserInfo.cs" />
+    <Compile Include="Models\Responses\UserToken.cs" />
     <Compile Include="Models\Service.cs" />
     <Compile Include="Models\Webservices\InstagramWebservice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -189,6 +190,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="App_Data\token.json" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -218,7 +220,6 @@
     <Content Include="Views\InstagramMap\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Views\Locations\" />
   </ItemGroup>
   <ItemGroup>

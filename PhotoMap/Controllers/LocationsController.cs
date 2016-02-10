@@ -56,14 +56,15 @@ namespace PhotoMap.Controllers
                     if (ModelState.IsValid)
                     {
                         var code = Request.QueryString["code"];
-                        if (photoMap.latitude > 0.0 && photoMap.longitude > 0.0)
-                        {
-                            List<Location> locations = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
-                            foreach (Location item in locations)
-                            {
-                                photoMap.locations.Add(item);
-                            }
-                        }
+                        photoMap.posts = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
+                        //if (photoMap.latitude > 0.0 && photoMap.longitude > 0.0)
+                        //{
+                        //    List<Location> locations = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
+                        //    foreach (Location item in locations)
+                        //    {
+                        //        photoMap.locations.Add(item);
+                        //    }
+                        //}
 
                     }
                 }

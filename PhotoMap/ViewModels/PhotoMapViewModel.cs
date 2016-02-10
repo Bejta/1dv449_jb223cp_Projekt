@@ -15,8 +15,8 @@ namespace PhotoMap.ViewModels
         public List<InstagramPost> posts { get; set; }
         public List<Location> locations { get; set; }
         public List<Tag> tags { get; set; }
-        public float longitude { get; set; }
-        public float latitude { get; set; }
+        public string longitude { get; set; }
+        public string latitude { get; set; }
 
         [DisplayName("Tag")]
         [StringLength(20)]

@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web;
+using System.Web.Script.Serialization;
 
 namespace PhotoMap.Models.Abstract
 {
@@ -26,20 +27,32 @@ namespace PhotoMap.Models.Abstract
         public abstract UserInfo GetUser(string code);
         public abstract Tags GetTags(string code, string tag);
         public abstract List<InstagramPost> GetRecentImagesByTag(string code, string tag);
-        public abstract List<Location> GetLocations(string code, float lat, float ltd);
+        public abstract List<InstagramPost> GetLocations(string code, string lat, string ltd);
         public abstract List<InstagramPost> GetImagesByLocationID(string code, string locationId);
 
         public string RawJson(string apiRequest, string code)
         {
             var rawJson = string.Empty;
             OAuthInstagramAccessToken accessTokenObj = new OAuthInstagramAccessToken();
-            //checks if access token expired or is not used
-            if (accessToken == null || accessToken == String.Empty)
+            UserToken ut = GetUserTokens();
+
+            if (ut != null)
+            {
+                accessToken = ut.AccessToken;
+            }
+            else
             {
                 accessTokenObj = GetAccessToken(code);
                 accessToken = accessTokenObj.AccessToken;
+
+                //writes data in json file on server
+                dynamic parsedJson = JsonConvert.DeserializeObject(rawJson);
+                using (var writer = new StreamWriter(HttpContext.Current.Server.MapPath("~/App_Data/token.json")))
+                {
+                    writer.WriteLine(JsonConvert.SerializeObject(parsedJson, Formatting.Indented));
+                }
             }
-                
+
             var url = BaseUrl + apiRequest + "?access_token=" + accessToken;
             var request = (HttpWebRequest)WebRequest.Create(url);
 
@@ -51,7 +64,42 @@ namespace PhotoMap.Models.Abstract
 
             return rawJson;
         }
+        public string RawJsonQuery(string apiRequest, string code)
+        {
+            var rawJson = string.Empty;
+            OAuthInstagramAccessToken accessTokenObj = new OAuthInstagramAccessToken();
+            //checks if access token expired or is not used
 
+            UserToken ut = GetUserTokens();
+
+            if (ut != null)
+            {
+                accessToken = ut.AccessToken;
+            }
+            else
+            {
+                accessTokenObj = GetAccessToken(code);
+                accessToken = accessTokenObj.AccessToken;
+
+                //writes data in json file on server
+                dynamic parsedJson = JsonConvert.DeserializeObject(rawJson);
+                using (var writer = new StreamWriter(HttpContext.Current.Server.MapPath("~/App_Data/token.json")))
+                {
+                    writer.WriteLine(JsonConvert.SerializeObject(parsedJson, Formatting.Indented));
+                }
+            }
+           
+            var url = BaseUrl + apiRequest + "&access_token=" + accessToken;
+            var request = (HttpWebRequest)WebRequest.Create(url);
+
+            using (var response = request.GetResponse())
+            using (var reader = new StreamReader(response.GetResponseStream()))
+            {
+                rawJson = reader.ReadToEnd();
+            }
+
+            return rawJson;
+        }
         //Process all requests and return a response
         private WebResponse processWebRequest(string url)
         {
@@ -109,7 +157,21 @@ namespace PhotoMap.Models.Abstract
             
             return code;
         }
+        
+        private UserToken GetUserTokens()
+        {
+            var rawJson = string.Empty;
 
+            //Reads data from messages.json file
+            using (var readerCashe = new StreamReader(HttpContext.Current.Server.MapPath("~/App_Data/token.json")))
+            {
+                rawJson = readerCashe.ReadToEnd();
+            }
+
+            UserToken userToken = new UserToken();
+            userToken = JsonConvert.DeserializeObject<UserToken>(rawJson);
+            return userToken;
+        }
        
 
         private OAuthInstagramAccessToken GetAccessToken(string code)

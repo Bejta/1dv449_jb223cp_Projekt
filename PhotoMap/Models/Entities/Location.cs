@@ -11,9 +11,9 @@ namespace PhotoMap.Models.Entities
         [JsonProperty("id")]
         public string Id { get; set; }
         [JsonProperty("latitude")]
-        public float Latitude { get; set; }
+        public string Latitude { get; set; }
         [JsonProperty("longitude")]
-        public float Longitude { get; set; }
+        public string Longitude { get; set; }
         [JsonProperty("name")]
         public string Name { get; set; }
     }

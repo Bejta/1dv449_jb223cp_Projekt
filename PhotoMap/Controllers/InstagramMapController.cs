@@ -34,11 +34,6 @@ namespace PhotoMap.Controllers
             return View(photoMap);
         }
 
-        //public ActionResult Login()
-        //{
-        //    //var code = Redirect("https://api.instagram.com/oauth/authorize/?client_id=cb9ed86412594d1eb2bf9b7f83a73131&redirect_uri=http://localhost&response_type=code");
-        //    return View("Login");
-        //}
 
         [HttpPost]
         //[ValidateAntiForgeryToken][Bind(Include = "Tag")]
@@ -54,7 +49,7 @@ namespace PhotoMap.Controllers
                          redirect_uri);
                 //string a = response_uri;
                 //Server.Transfer(response_uri);
-                Response.Redirect(response_uri);
+                Response.Redirect(response_uri, false);
             }
             else
             {
@@ -70,14 +65,15 @@ namespace PhotoMap.Controllers
                         }
                         else
                         {
-                            if (photoMap.latitude > 0.0 && photoMap.longitude > 0.0)
-                            {
-                                List<Location> locations = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
-                                foreach (Location item in locations)
-                                {
-                                    photoMap.locations.Add(item);
-                                }
-                            }
+                            photoMap.posts = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
+                            //if (photoMap.latitude > 0.0 && photoMap.longitude > 0.0)
+                            //{
+                            //    List<InstagramPost> locations = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
+                            //    foreach (Location item in locations)
+                            //    {
+                            //        photoMap.locations.Add(item);
+                            //    }
+                            //}
                         }
       
                     }
@@ -107,7 +103,7 @@ namespace PhotoMap.Controllers
                          redirect_uri);
                 //string a = response_uri;
                 //Server.Transfer(response_uri);
-                Response.Redirect(response_uri);
+                Response.Redirect(response_uri,false);
             }
             else
             {
@@ -116,14 +112,16 @@ namespace PhotoMap.Controllers
                     if (ModelState.IsValid)
                     {
                         var code = Request.QueryString["code"];
-                        if (photoMap.latitude > 0.0 && photoMap.longitude > 0.0)
-                        {
-                            List<Location> locations = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
-                            foreach (Location item in locations)
-                            {
-                                photoMap.locations.Add(item);
-                            }
-                        }
+                        photoMap.posts = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
+                        //var code = Request.QueryString["code"];
+                        //if (photoMap.latitude > 0.0 && photoMap.longitude > 0.0)
+                        //{
+                        //    List<Location> locations = _service.GetLocations(code, photoMap.latitude, photoMap.longitude);
+                        //    foreach (Location item in locations)
+                        //    {
+                        //        photoMap.locations.Add(item);
+                        //    }
+                        //}
 
                     }
                 }

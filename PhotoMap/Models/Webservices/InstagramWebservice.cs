@@ -57,7 +57,7 @@ namespace PhotoMap.Models.Webservices
         {
             var rawJson = string.Empty;
             var apiRequest = string.Format("/tags/search?q={0}", tag);
-            rawJson = RawJson(apiRequest, code);
+            rawJson = RawJsonQuery(apiRequest, code);
            
             Tags tags = new Tags();
             tags = JsonConvert.DeserializeObject<Tags>(rawJson);
@@ -88,15 +88,18 @@ namespace PhotoMap.Models.Webservices
         /// <param name="code"></param>
         /// <param name="location"></param>
         /// <returns></returns>
-        public override List<Location> GetLocations(string code, float lat, float ltd)
+        public override List<InstagramPost> GetLocations(string code, string lat, string ltd)
         {
             var rawJson = string.Empty;
-            var apiRequest = string.Format("locations/search?lat={0}&lng={1}", lat,ltd);
-            rawJson = RawJson(apiRequest, code);
+            var apiRequest = string.Format("media/search?lat={0}&lng={1}", lat,ltd);
+            rawJson = RawJsonQuery(apiRequest, code);
 
-            List<Location> locations = new List<Location>();
-            locations = JsonConvert.DeserializeObject<List<Location>>(rawJson);
-            return locations;
+            //List<Location> locations = new List<Location>();
+            List<InstagramPost> instagramPosts = new List<InstagramPost>();
+            instagramPosts = JsonConvert.DeserializeObject<Post>(rawJson).Data;
+            return instagramPosts;
+            //locations = JsonConvert.DeserializeObject<List<Location>>(rawJson);
+            //return locations;
         }
         /// <summary>
         /// Returns Instagram posts from given location
