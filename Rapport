@@ -1,0 +1,13 @@
+### Rapport
+
+####Webbteknik 2
+
+###Inledning
+###Tekniker
+###Säkerhet och prestandaoptimering
+###Offline-first:
+Jag inkluderar en cache.manifest fil i HTML tagg. Filen innehåller instruktioner om vilka delar i applikation sparas lokalt (cache).
+Jag har gjort en offline.html sida, vilken visas för användare i såna delar i applikationen som är inte cachad.
+
+
+###Risker med din applikation:
