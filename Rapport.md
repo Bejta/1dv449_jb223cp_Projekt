@@ -6,6 +6,8 @@
 Jag har skapat en mashup applikation vilken använder tre olika Apier. Två av apier används för inläsning av data, och en av Apierna (Google Maps) visar data på en karta. Applikation använder Instagram api för att visa Instagram media (bilderna och video) filtrerade efter taggs, eller efter geografisk läge.
 ###Schematisk bild över applikationens beståndsdelar
 
+![schema](https://cloud.githubusercontent.com/assets/8629282/12969407/5c5a96d4-d080-11e5-825d-0fddc298199a.png)
+
 ###Tekniker
 Jag använder Instagram API, Google maps API och Google places API. Jag har inte haft större problem med google Apier, delvist för att jag har redan använt denna i laboration 3, men också för att jag har hittat ganska bra tutorials.
 Instagram Api var riktigt svårt att implementera. Instagram tillåter inte sökning av media på deras servis för användare vilka är inte inloggade. Inloggnings process är sådan (OAuth2), att man får en _code_ av Instagram (då när man skickar request och får response på definierad redirect.uri) och med koden man gör en request vilket resulterar att man får _access token_ vilken man kan använda i sökningarna. Dokumentation kring detta var inte av större hjälp, och jag hittade inga bra tutorials. Jag hittade dock, en wrappen gjort för Instagram, så att man kunde inkludera biblioteket i sitt projekt och utveckla vidare på smydigt sätt, men jag valde att gå min egen väg.
